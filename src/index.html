@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Quiz In JavaScript</title>
+        <link rel="stylesheet" href="/src/output.css">
+    </head>
+    <body class="bg-gray-100 min-h-screen flex items-center justify-center p-8">
+        <div class="max-w-md w-full bg-white rounded-lg shadow-lg overflow-hidden"><!--===>> overfow-hidden -->
+
+            <div class="bg-blue-600 p-4 text-white">
+                <h1 class="text-2xl font-bold">JavaScript Quiz</h1>
+            </div>
+            
+            <div id="quiz-container" class="p-6">
+                <div id="start-screen" class="text-center">
+                    <h2 class="text-xl font-semibold mb-4 font-light​​​"​>សូមស្វាគមន៍មកកាន់ JavaScript Quiz!</h2>
+                    <p class="mb-6">Answer 5 questions </p>
+                    <button id="start-btn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-6 rounded">
+                        Start Quiz
+                    </button>
+                </div>
+                
+                <div id="quiz-screen" class="hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <span id="question-count" class="font-semibold text-gray-600">Question 1/5</span>
+                        <span id="score" class="font-semibold">Score: 0</span>
+                    </div>
+                    <h2 id="question" class="text-lg font-medium mb-4"></h2>
+                    <div id="options" class="space-y-2 mb-6"></div>
+                    <button id="next-btn" class="bg-blue-200 hover:bg-blue-700 text-black font-bold py-2 px-6 rounded">Next Question  </button>
+                </div>
+                
+                <div id="result-screen" class="hidden text-center">
+                    <h2 class="text-xl font-semibold mb-4">Quiz Completed!</h2>
+                    <p id="final-score" class="text-2xl font-bold mb-6"></p>
+                    <button id="restart-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded">Restart Quiz </button>
+                </div>
+            </div>
+        </div>
+        
+
+        <script>
+            const questions = [
+                {
+                    question: "What does '===' mean in JavaScript?",
+                    options: ["Assignment", "Equality", "Strict Equality", "Type Check"],
+                    answer: "Strict Equality"
+                },
+                {
+                    question: "Which keyword declares a constant variable?",
+                    options: ["let", "var", "const", "define"],
+                    answer: "const"
+                },
+                {
+                    question: "What is the type of 'typeof null'?",
+                    options: ["object", "null", "undefined", "Number"],
+                    answer: "object"
+                },
+                {
+                    question: "Which loop run at least once?",
+                    options: ["for", "While", "do while", "foreach"],
+                    answer: "do while"
+                },
+                {
+                    question: "Which of this is not a primitive data type?",
+                    options: ["String", "Boolean", "Object", "Number"],
+                    answer: "Object"
+                }
+           
+            ];
+            const startScreen         = document.getElementById('start-screen');
+            const quizScreen          = document.getElementById('quiz-screen');
+            const resultScreen        = document.getElementById('result-screen');
+            const startBtn            = document.getElementById('start-btn');
+            const nextBtn             = document.getElementById('next-btn');
+            const restartBtn          = document.getElementById('restart-btn');
+            const questionElement     = document.getElementById('question');
+            const optionsElement      = document.getElementById('options');
+            const questionCounter     = document.getElementById('question-count');
+            const scoreElement        = document.getElementById('score');
+            const finalScoreElement   = document.getElementById('final-score');
+            let questionIndex         = 0;
+            let score                 = 0;
+    
+            function startQuiz() {
+                startScreen.classList.add('hidden');
+                quizScreen.classList.remove('hidden');
+                showQuestion();
+            }
+    
+
+            function showQuestion() {
+                const currentQuestion = questions[questionIndex];
+                questionElement.textContent = currentQuestion.question;
+                optionsElement.innerHTML = '';
+                questionCounter.textContent = `Question ${questionIndex + 1}/${questions.length}`;
+                currentQuestion.options.forEach(option => {
+                    const button = document.createElement('button');
+                    button.textContent = option;
+                    button.className = 'w-full text-left p-3 border border-gray-300 rounded hover:bg-gray-100 transition';
+                    button.addEventListener('click', () => {
+                        const isCorrect = option === currentQuestion.answer;
+                        if (isCorrect) {
+                            score++;
+                            scoreElement.textContent = `Score: ${score}`;
+                            alert(`Correct🎉💚! The answer is: ${currentQuestion.answer}`);
+                        } else {
+                            alert(`Wrong ❌! correct answer is: ${currentQuestion.answer}`);
+                        }
+                        document.querySelectorAll('#options button').forEach(btn => {
+                            if (btn.textContent === currentQuestion.answer) {
+                                btn.classList.add('bg-green-100', 'border-green-500');
+                            } else {
+                                btn.classList.remove('bg-green-100', 'border-green-500');
+                            }
+                        });
+                        
+                        nextBtn.classList.remove('hidden');
+                    });
+                    optionsElement.appendChild(button);
+                });
+                nextBtn.classList.add('hidden');
+            }
+
+
+            function nextQuestion() {
+                questionIndex++;
+                if (questionIndex < questions.length) {
+                    showQuestion();
+                } else {
+                    showResults();
+                }
+            }
+    
+
+            function showResults() {
+                quizScreen.classList.add('hidden');
+                resultScreen.classList.remove('hidden');
+                finalScoreElement.textContent = `Your score: ${score} out of ${questions.length}`;
+            }
+    
+
+            function restartQuiz() {
+                questionIndex = 0;
+                score = 0;
+                scoreElement.textContent = 'Score: 0';
+                resultScreen.classList.add('hidden');
+                startQuiz();
+            }
+    
+            startBtn.addEventListener('click', startQuiz);
+            nextBtn.addEventListener('click', nextQuestion);
+            restartBtn.addEventListener('click', restartQuiz);
+        </script>
+    </body>
+</html>
